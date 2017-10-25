@@ -29,3 +29,8 @@ type OrderInteractor struct {
 	ItemRepository  domain.ItemRepository
 	Logger          Logger
 }
+
+type OrderInteractorService interface {
+	Items(userId, orderId int) ([]Item, error)
+	Add(userId, orderId, itemId int) error
+}

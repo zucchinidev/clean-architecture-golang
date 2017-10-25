@@ -8,13 +8,8 @@ import (
 	"fmt"
 )
 
-type OrderInteractor interface {
-	Items(userId, orderId int) ([]usescases.Item, error)
-	Add(userId, orderId, itemId int) error
-}
-
 type WebServiceHandler struct {
-	OrderInteractor OrderInteractor
+	OrderInteractor usescases.OrderInteractorService
 }
 
 func (handler WebServiceHandler) ShowOrder(res http.ResponseWriter, req *http.Request) {
