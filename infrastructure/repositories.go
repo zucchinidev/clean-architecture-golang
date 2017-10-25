@@ -20,4 +20,18 @@ type DBCustomerRepo DbRepo
 type DBOrderRepo DbRepo
 type DBItemRepo DbRepo
 
+type AvailableRepositories struct {
+	UserRepo     string
+	CustomerRepo string
+	ItemRepo     string
+	OrderRepo    string
+}
 
+func GetAvailableRepositories() AvailableRepositories {
+	return AvailableRepositories{
+		UserRepo:     "UserRepo",
+		CustomerRepo: "CustomerRepo",
+		ItemRepo:     "ItemRepo",
+		OrderRepo:    "OrderRepo",
+	}
+}
