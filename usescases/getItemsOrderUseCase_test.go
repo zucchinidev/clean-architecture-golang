@@ -1,36 +1,26 @@
 package usescases
 
-import (
-	"github.com/zucchinidev/clean-architecture-golang/domain"
-	"fmt"
-)
+import "testing"
+func TestOrderInteractor_Items(t *testing.T) {
+	orderId := 1
+	userId := 1
+	o := getFakeOrderInteractor()
+	t.Log("Given the need to test retrieve items.")
+	{
+		t.Logf("\tWhen get items for a userId %d and orderId %d", userId, orderId)
+		{
+			items, err := o.Items(userId, orderId)
+			if err != nil {
+				t.Fatal("\t\tShould be able to retrieve all items.", ballotX, err)
+			}
 
-func (interactor *OrderInteractor) Items(userId, orderId int) ([]Item, error) {
-	var items []Item
-	user := interactor.UserRepository.FindById(userId)
-	order := interactor.OrderRepository.FindById(orderId)
-	if err := checkIsAllowedSeeItems(&user, &order); err != nil {
-		interactor.Logger.Log(err.Error())
-		return items, err
-	}
+			t.Log("\t\tShould be able to retrieve all items.", checkMark)
 
-	items = make([]Item, len(order.Items))
-	for i, item := range order.Items {
-		items[i] = Item{item.Id, item.Name, item.Value}
+			if len(items) == 2 {
+				t.Logf("\t\tShould receive two items %v", checkMark)
+			} else {
+				t.Errorf("\t\tShould receive two items but found %d. %v", len(items), ballotX)
+			}
+		}
 	}
-	return items, nil
-}
-
-func checkIsAllowedSeeItems(user *User, order *domain.Order) error {
-	if user.Customer.Id != order.Customer.Id {
-		message := "User #%i (customer #%i) "
-		message += "is not allowed to see items "
-		message += "in order #%i (of course #%i) "
-		return fmt.Errorf(message,
-			user.Id,
-			user.Customer.Id,
-			order.Id,
-			order.Customer.Id)
-	}
-	return nil
 }
