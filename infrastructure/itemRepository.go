@@ -8,7 +8,7 @@ import (
 func NewDBItemRepo(dbHandlers map[string]DBHandler) *DBItemRepo {
 	dbItemRepo := new(DBItemRepo)
 	dbItemRepo.dbHandlers = dbHandlers
-	dbItemRepo.dbHandler = dbHandlers["DBItemRepo"]
+	dbItemRepo.dbHandler = dbHandlers[GetAvailableRepositories().ItemRepo]
 	return dbItemRepo
 }
 

@@ -8,7 +8,7 @@ import (
 func NewDBOrderRepo(dbHandlers map[string]DBHandler) *DBOrderRepo {
 	dbOrderRepo := new(DBOrderRepo)
 	dbOrderRepo.dbHandlers = dbHandlers
-	dbOrderRepo.dbHandler = dbHandlers["DBOrderRepo"]
+	dbOrderRepo.dbHandler = dbHandlers[GetAvailableRepositories().OrderRepo]
 	return dbOrderRepo
 }
 

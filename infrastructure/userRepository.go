@@ -6,9 +6,10 @@ import (
 )
 
 func NewDBUserRepo(dbHandlers map[string]DBHandler) *DBUserRepo {
+	availableRepositories := GetAvailableRepositories()
 	dbUserRepo := new(DBUserRepo)
 	dbUserRepo.dbHandlers = dbHandlers
-	dbUserRepo.dbHandler = dbHandlers["DBUserRepo"]
+	dbUserRepo.dbHandler = dbHandlers[availableRepositories.UserRepo]
 	return dbUserRepo
 }
 
@@ -23,9 +24,9 @@ func (repo *DBUserRepo) Store(user usescases.User) {
 	customerRepo.Store(user.Customer)
 }
 
-func (repo *DBUserRepo) FindBy(id int) usescases.User {
+func (repo *DBUserRepo) FindById(userId int) usescases.User {
 	row := repo.dbHandler.Query(fmt.Sprintf(`SELECT is_admin, customer_id
-													FROM users WHERE id = '%d' LIMIT 1`, id))
+													FROM users WHERE id = '%d' LIMIT 1`, userId))
 	var isAdmin string
 	var customerId int
 	row.Next()
@@ -33,7 +34,7 @@ func (repo *DBUserRepo) FindBy(id int) usescases.User {
 	customerRepo := NewDBCustomerRepo(repo.dbHandlers)
 	customer := customerRepo.FindById(customerId)
 	u := usescases.User{
-		Id: id,
+		Id: userId,
 		Customer: customer,
 	}
 	u.IsAdmin = false
