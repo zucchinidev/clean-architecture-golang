@@ -1,39 +1,21 @@
 package usescases
 
-import (
-	"fmt"
-	"github.com/zucchinidev/clean-architecture-golang/domain"
-)
+import "testing"
 
-func (interactor *OrderInteractor) Add(userId, orderId, itemId int) error {
-	user := interactor.UserRepository.FindById(userId)
-	order := interactor.OrderRepository.FindById(orderId)
-	if err := checkIsAllowedAddItems(&user, &order); err != nil {
-		interactor.Logger.Log(err.Error())
-		return err
+func TestOrderInteractor_Add(t *testing.T) {
+	orderId := 1
+	userId := 1
+	itemId := 3
+	o := getFakeOrderInteractor()
+	t.Log("Given the need to test add an item to order.")
+	{
+		t.Logf("\tWhen save an item with itemId %d and userId %d and orderId %d", itemId, userId, orderId)
+		{
+			err := o.Add(userId, orderId, itemId)
+			if err != nil {
+				t.Fatal("\t\tShould be able to add item to order.", ballotX, err)
+			}
+			t.Log("\t\tShould be able to add item to order.", checkMark)
+		}
 	}
-	item := interactor.ItemRepository.FindById(itemId)
-	if err := addItemToOrder(&order, &user, item); err != nil {
-		interactor.Logger.Log(err.Error())
-		return err
-	}
-	interactor.OrderRepository.Store(order)
-	interactor.Logger.Log(fmt.Sprintf(
-		"User added item '%s' (#%i) to order #%i",
-		item.Name, item.Id, order.Id))
-	return nil
-}
-
-func checkIsAllowedAddItems(user *User, order *domain.Order) error {
-	if user.Customer.Id != order.Customer.Id {
-		message := "User #%i (customer #%i) "
-		message += "is not allowed to add items "
-		message += "to order #%i (of customer #%i)"
-		return fmt.Errorf(message,
-			user.Id,
-			user.Customer.Id,
-			order.Id,
-			order.Customer.Id)
-	}
-	return nil
 }
